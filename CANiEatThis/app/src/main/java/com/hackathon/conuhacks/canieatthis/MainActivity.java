@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.mHelloWorldText);
         mOpenCamera = (Button) findViewById(R.id.mCameraButton);
         mImageView = (ImageView) findViewById(R.id.pictureTaken);
+        mImageView.setImageResource(R.drawable.logo);
         mNewImageButton = (Button) findViewById(R.id.newImage);
         mSetProfile = (Button) findViewById(R.id.mSetProfileButton);
         SetProfile();
@@ -250,12 +251,12 @@ public class MainActivity extends AppCompatActivity {
             name += "\n" + foods.get(0).getDescription();
             mTextView.setText(name);
             //System.out.println("=========FOODS============");
-            for (CompactFood food: foods) {
                 //System.out.println(food.getName());
                 //doToast(food.getName());
+            CompactFood food = foods.get(0);
                 if(isForbidden(food.getName(),new String[]{"Lettuce", "cookie", "tide"})) doToast("Can't eat "+food.getName());
                 else doToast("Enjoy the "+food.getName()+" :D");
-            }
+
         }
 
         @Override
