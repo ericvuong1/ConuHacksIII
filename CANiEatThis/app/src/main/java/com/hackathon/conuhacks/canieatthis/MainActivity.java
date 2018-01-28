@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         OpenCamera();
         SetNewImage();
 
+        /*
         //This response contains the list of food items at zeroth page for your query
         req.getFoods(requestQueue, query,0);
 
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         //This recipe object contains detailed information about the recipe item
         req.getRecipe(requestQueue, 315L);
+        */
     }
 
     public void SetProfile(){
@@ -278,5 +280,34 @@ public class MainActivity extends AppCompatActivity {
     public void doToast(String message){
         Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    public boolean isForbidden(String food, String[] avoidFoods){
+        for(String avoid : avoidFoods){
+            if(food.equals(avoid)) return true;
+        }
+        return false;
+    }
+
+    public String checkNutrients(Food food, String[] proteinAndFat){
+        float protein = Float.parseFloat(proteinAndFat[0]);
+        float fats = Float.parseFloat(proteinAndFat[1]);
+
+        String desc = food.getDescription();
+        String[] desc1 = desc.split("-");
+        String[] nutr = desc1[0].split("|");
+
+        float cal = Float.parseFloat(nutr[0].replaceAll("[^\\.0123456789]",""));
+        float fat = Float.parseFloat(nutr[1].replaceAll("[^\\.0123456789]",""));
+        float carbs = Float.parseFloat(nutr[0].replaceAll("[^\\.0123456789]",""));
+        float prot = Float.parseFloat(nutr[0].replaceAll("[^\\.0123456789]",""));
+
+        float dailyFat = 70; //grams
+        float dailyProtein = 50; //grams
+
+        if(dailyFat/fat > 2100/cal) return "no bueno, too much fat";
+        if(dailyProtein/prot > 2100/cal) return "no bueno, too much prot";
+
+        return "bueno";
     }
 }
