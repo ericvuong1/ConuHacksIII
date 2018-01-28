@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     Button mNewImageButton;
     TextView mTextView;
     Button mSetProfile;
+    String name;
 
     String query;
     Request req;
@@ -192,8 +193,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         Log.d("Debug Path", mCurrentPhotoPath);
-        Toast toast = Toast.makeText(this, mCurrentPhotoPath, Toast.LENGTH_SHORT);
-        toast.show();
     }
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -231,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
             int size = arr.length();
 
             JSONObject res = obj.getJSONArray("images").getJSONObject(0).getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0);
-            String name = res.getString("class");
+            name = res.getString("class");
             mTextView.setText(name);
 
             Toast toast = Toast.makeText(this, name, Toast.LENGTH_SHORT);
@@ -248,7 +247,8 @@ public class MainActivity extends AppCompatActivity {
 
             List<CompactFood> foods = response.getResults();
             //This list contains summary information about the food items
-
+            name += "\n" + foods.get(0).getDescription();
+            mTextView.setText(name);
             //System.out.println("=========FOODS============");
             for (CompactFood food: foods) {
                 //System.out.println(food.getName());
