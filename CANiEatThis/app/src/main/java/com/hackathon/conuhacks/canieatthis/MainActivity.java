@@ -1,118 +1,89 @@
 package com.hackathon.conuhacks.canieatthis;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Debug;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 
-import java.text.*;
-import java.util.Date;
+import com.fatsecret.platform.model.CompactFood;
+import com.fatsecret.platform.model.CompactRecipe;
+import com.fatsecret.platform.model.Food;
+import com.fatsecret.platform.model.Recipe;
+import com.fatsecret.platform.services.Response;
+import com.fatsecret.platform.services.android.Request;
+import com.fatsecret.platform.services.android.ResponseListener;
 
-import java.io.File;
-import java.io.IOException;
-
-import static android.R.attr.duration;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    static final int REQUEST_TAKE_PHOTO = 1;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-
-    Button mOpenCamera;
-    WebView mWebView;
-    String mCurrentPhotoPath;
-    ImageView mImageView;
-    Button mNewImageButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mOpenCamera = (Button) findViewById(R.id.mCameraButton);
-        mImageView = (ImageView) findViewById(R.id.pictureTaken);
-        mNewImageButton = (Button) findViewById(R.id.newImage);
-        OpenCamera();
-        SetNewImage();
+        String key = "Replace this by your Application Consumer Key";
+        String secret = "Replace this by your Consumer Secret";
+        String query = "pasta";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Listener listener = new Listener();
 
+        Request req = new Request(key, secret, listener);
+
+        //This response contains the list of food items at zeroth page for your query
+        req.getFoods(requestQueue, query,0);
+
+        //This response contains the list of food items at page number 3 for your query
+        //If total results are less, then this response will have empty list of the food items
+        req.getFoods(requestQueue, query, 3);
+
+        //This food object contains detailed information about the food item
+        req.getFood(requestQueue, 29304L);
+
+        //This response contains the list of recipe items at zeroth page for your query
+        req.getRecipes(requestQueue, query,0);
+
+        //This response contains the list of recipe items at page number 2 for your query
+        //If total results are less, then this response will have empty list of the recipe items
+        req.getRecipes(requestQueue, query, 2);
+
+        //This recipe object contains detailed information about the recipe item
+        req.getRecipe(requestQueue, 315L);
     }
 
-    public void SetNewImage(){
-        mNewImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                File imgFile = new  File(mCurrentPhotoPath);
+    class Listener implements ResponseListener {
+        @Override
+        public void onFoodListRespone(Response<CompactFood> response) {
+            System.out.println("TOTAL FOOD ITEMS: " + response.getTotalResults());
 
-                if(imgFile.exists()){
+            List<CompactFood> foods = response.getResults();
+            //This list contains summary information about the food items
 
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                    mImageView.setImageBitmap(myBitmap);
-
-                }
-            }
-        });
-    }
-    public void OpenCamera(){
-        mOpenCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dispatchTakePictureIntent();
-            }
-        });
-        }
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            System.out.println("=========FOODS============");
+            for (CompactFood food: foods) {
+                System.out.println(food.getName());
             }
         }
-        Log.d("Debug Path", mCurrentPhotoPath);
-        Toast toast = Toast.makeText(this, mCurrentPhotoPath, Toast.LENGTH_SHORT);
-        toast.show();
-    }
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
+        @Override
+        public void onRecipeListRespone(Response<CompactRecipe> response) {
+            System.out.println("TOTAL RECIPES: " + response.getTotalResults());
 
+            List<CompactRecipe> recipes = response.getResults();
+            System.out.println("=========RECIPES==========");
+            for (CompactRecipe recipe: recipes) {
+                System.out.println(recipe.getName());
+            }
+        }
+
+        @Override
+        public void onFoodResponse(Food food) {
+            System.out.println("FOOD NAME: " + food.getName());
+        }
+
+        @Override
+        public void onRecipeResponse(Recipe recipe) {
+            System.out.println("RECIPE NAME: " + recipe.getName());
+        }
+    }
 }
