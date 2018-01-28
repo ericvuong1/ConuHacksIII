@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CANiEatThis</string>
+    <string name="HelloWorld"/>
+    <string name="helloWorld">HelloWorld</string>
+    <string name="hello">HelloWorld</string>
+    <string name="OpenCamera">Open Camera</string>
+    <string name="NewImage">NewI mage</string>
+</resources>

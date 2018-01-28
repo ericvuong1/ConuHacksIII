@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hackathon.conuhacks.canieatthis.MainActivity">
+
+    <TextView
+        android:id="@+id/mHelloWorldText"
+        android:layout_width="76dp"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.502"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
+        tools:text="@string/hello"/>
+
+    <Button
+        android:id="@+id/mCameraButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="71dp"
+        android:text="@string/OpenCamera"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mHelloWorldText"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
+        tools:text="@string/OpenCamera"/>
+
+    <ImageView
+        android:id="@+id/pictureTaken"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="21dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="14dp"
+        app:layout_constraintBottom_toTopOf="@+id/mHelloWorldText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"/>
+
+    <Button
+        android:id="@+id/newImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="29dp"
+        android:text="@string/NewImage"
+        app:layout_constraintLeft_toLeftOf="@+id/mCameraButton"
+        app:layout_constraintTop_toBottomOf="@+id/mCameraButton"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintTop_creator="1"/>
+
+</android.support.constraint.ConstraintLayout>

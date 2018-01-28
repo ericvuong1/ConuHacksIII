@@ -1,0 +1,18 @@
+<script>
+
+function getRandomNumber(min,max) {
+return Math.floor( Math.random() * ( 1 + min - max ) ) + max;
+}
+
+function showOrders() {
+var number = getRandomNumber(10000,50000)
+JSReceiver.showOrders(number);
+}
+
+function showShopping() {
+JSReceiver.showShopping();
+}
+</script>
+
+<a href="#" class="btn-view-orders" onclick="showOrders()">View Orders</a>
+<a href="#" onclick="showShopping()">Continue Shopping</a>
