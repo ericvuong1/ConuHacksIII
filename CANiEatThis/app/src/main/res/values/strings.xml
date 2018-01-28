@@ -6,4 +6,5 @@
     <string name="OpenCamera">Open Camera</string>
     <string name="NewImage">NewI mage</string>
     <string name="setProfileString">Set Profile</string>
+    <string name="SaveString">Save</string>
 </resources>
