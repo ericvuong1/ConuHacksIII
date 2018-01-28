@@ -42,6 +42,7 @@ import com.ibm.watson.developer_cloud.visual_recognition.v3.model.*;
 import static android.R.attr.duration;
 import static android.R.attr.name;
 import static android.R.id.list;
+import static android.media.CamcorderProfile.get;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
     VisualRecognition service;
 
+    CompactFood foodToDisplay;
+
     String ProteinValue;
     String FatValue; 
 
@@ -110,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
         mImageView = (ImageView) findViewById(R.id.pictureTaken);
         mNewImageButton = (Button) findViewById(R.id.newImage);
         mSetProfile = (Button) findViewById(R.id.mSetProfileButton);
-        mGetNutritionButton = (Button) findViewById(R.id.mGetNutritionButton);
-        GetNutrition();
         SetProfile();
         OpenCamera();
         SetNewImage();
@@ -139,14 +140,6 @@ public class MainActivity extends AppCompatActivity {
         */
 
     }
-    public void GetNutrition(){
-        mGetNutritionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: FERAS
-            }
-        });
-    }
 
     public void SetProfile(){
         mSetProfile.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 try{
                     query = classifyImage(mCurrentPhotoPath,service)[0][0];
                     req.getFoods(requestQueue, query,0);
+
                 }
                 catch(Exception e){
                     e.printStackTrace();
@@ -214,8 +208,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         Log.d("Debug Path", mCurrentPhotoPath);
-        Toast toast = Toast.makeText(this, mCurrentPhotoPath, Toast.LENGTH_SHORT);
-        toast.show();
     }
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -330,6 +322,10 @@ public class MainActivity extends AppCompatActivity {
 
             List<CompactFood> foods = response.getResults();
             //This list contains summary information about the food items
+
+            foodToDisplay = foods.get(0);
+            toDisplay += foodToDisplay.getDescription();
+            mTextView.setText(toDisplay);
 
             //System.out.println("=========FOODS============");
             for (CompactFood food: foods) {
