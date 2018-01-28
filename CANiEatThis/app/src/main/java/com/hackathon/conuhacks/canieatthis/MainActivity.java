@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
     VisualRecognition service;
 
+    String ProteinValue;
+    String FatValue; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try{
-                    query = classifyImage(mCurrentPhotoPath,service);
+                    query = classifyImage(mCurrentPhotoPath,service)[0][0];
                     req.getFoods(requestQueue, query,0);
                 }
                 catch(Exception e){
@@ -310,8 +312,9 @@ public class MainActivity extends AppCompatActivity {
             for (CompactFood food: foods) {
                 //System.out.println(food.getName());
                 //doToast(food.getName());
-                if(isForbidden(food.getName(),new String[]{"Lettuce", "cookie", "tide"})) doToast("Can't eat "+food.getName());
+                if(isForbidden(food.getName(),new String[]{"lettuce","Romaine Lettuce","Lettuce", "cookie", "tide"})) doToast("Can't eat "+food.getName());
                 else doToast("Enjoy the "+food.getName()+" :D");
+                checkNutrients(food,new String[]{ProteinValue,FatValue});
             }
         }
 
