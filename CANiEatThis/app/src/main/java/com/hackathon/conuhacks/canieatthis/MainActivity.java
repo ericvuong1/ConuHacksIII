@@ -16,8 +16,12 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,12 +60,16 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     Button mOpenCamera;
+    Button mGetNutritionButton;
     WebView mWebView;
     String mCurrentPhotoPath;
     ImageView mImageView;
     Button mNewImageButton;
     TextView mTextView;
     Button mSetProfile;
+    String toDisplay;
+
+    ListAdapter viewItemAdapter;
 
     String query;
     Request req;
@@ -102,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         mImageView = (ImageView) findViewById(R.id.pictureTaken);
         mNewImageButton = (Button) findViewById(R.id.newImage);
         mSetProfile = (Button) findViewById(R.id.mSetProfileButton);
+        mGetNutritionButton = (Button) findViewById(R.id.mGetNutritionButton);
+        GetNutrition();
         SetProfile();
         OpenCamera();
         SetNewImage();
@@ -128,6 +138,14 @@ public class MainActivity extends AppCompatActivity {
         req.getRecipe(requestQueue, 315L);
         */
 
+    }
+    public void GetNutrition(){
+        mGetNutritionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: FERAS
+            }
+        });
     }
 
     public void SetProfile(){
@@ -288,7 +306,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        String toDisplay = "";
+        toDisplay = "";
+        String[] toSend = new String[list.length*list[0].length];
         for(int i=0;i<list.length;i++){
             for(int j=0;j<list[0].length; j++){
                 toDisplay += list[i][j] + "\n";
@@ -296,7 +315,11 @@ public class MainActivity extends AppCompatActivity {
         }
         mTextView.setText(toDisplay);
 
+
+
         String best = list[0][0];
+
+
             return list;
     }
 

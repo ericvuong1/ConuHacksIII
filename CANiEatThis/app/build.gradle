@@ -34,7 +34,7 @@ dependencies {
     compile files('libs/java-sdk-4.2.1-jar-with-dependencies.jar')
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
     compile 'com.fatsecret4j:fatsecret-platform:2.0'
     compile 'com.android.volley:volley:1.0.0'
+    testCompile 'junit:junit:4.12'
 }
