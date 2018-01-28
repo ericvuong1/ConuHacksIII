@@ -62,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     TextView mTextView;
     Button mSetProfile;
 
+    String query;
+    Request req;
+    RequestQueue requestQueue;
+
     VisualRecognition service;
 
 
@@ -77,11 +81,11 @@ public class MainActivity extends AppCompatActivity {
 
         String key = "78a7438276284f46b1f4cb2aa6b85dde";
         String secret = "96dfe6b71ce543ef9a3af14a8db94d84";
-        String query = "pasta";
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        //String query = "pasta";
+        requestQueue = Volley.newRequestQueue(this);
         Listener listener = new Listener();
 
-        Request req = new Request(key, secret, listener);
+        req = new Request(key, secret, listener);
 
         Intent myIntent = getIntent(); // gets the previously created intent
         String ProteinValue = myIntent.getStringExtra("ProteinValue"); // will return "FirstKeyValue"
@@ -145,7 +149,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try{
-                classifyImage(mCurrentPhotoPath,service);
+                    query = classifyImage(mCurrentPhotoPath,service);
+                    req.getFoods(requestQueue, query,0);
                 }
                 catch(Exception e){
                     e.printStackTrace();
@@ -239,16 +244,17 @@ public class MainActivity extends AppCompatActivity {
     class Listener implements ResponseListener {
         @Override
         public void onFoodListRespone(Response<CompactFood> response) {
-            System.out.println("TOTAL FOOD ITEMS: " + response.getTotalResults());
+            //System.out.println("TOTAL FOOD ITEMS: " + response.getTotalResults());
 
             List<CompactFood> foods = response.getResults();
             //This list contains summary information about the food items
 
-            System.out.println("=========FOODS============");
+            //System.out.println("=========FOODS============");
             for (CompactFood food: foods) {
-                System.out.println(food.getName());
-                doToast(food.getName());
-
+                //System.out.println(food.getName());
+                //doToast(food.getName());
+                if(isForbidden(food.getName(),new String[]{"Lettuce", "cookie", "tide"})) doToast("Can't eat "+food.getName());
+                else doToast("Enjoy the "+food.getName()+" :D");
             }
         }
 
@@ -289,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    public String checkNutrients(Food food, String[] proteinAndFat){
+    public String checkNutrients(CompactFood food, String[] proteinAndFat){
         float protein = Float.parseFloat(proteinAndFat[0]);
         float fats = Float.parseFloat(proteinAndFat[1]);
 
