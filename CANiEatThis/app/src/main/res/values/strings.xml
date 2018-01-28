@@ -5,4 +5,5 @@
     <string name="hello">HelloWorld</string>
     <string name="OpenCamera">Open Camera</string>
     <string name="NewImage">NewI mage</string>
+    <string name="setProfileString">Set Profile</string>
 </resources>
