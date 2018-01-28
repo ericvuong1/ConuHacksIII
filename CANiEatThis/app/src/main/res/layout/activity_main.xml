@@ -27,7 +27,7 @@
         android:id="@+id/mCameraButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="71dp"
+        android:layout_marginTop="75dp"
         android:text="@string/OpenCamera"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -35,7 +35,8 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1"
-        tools:text="@string/OpenCamera"/>
+        tools:text="@string/OpenCamera"
+        app:layout_constraintHorizontal_bias="0.501"/>
 
     <ImageView
         android:id="@+id/pictureTaken"
@@ -59,12 +60,27 @@
         android:id="@+id/newImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="29dp"
+        android:layout_marginStart="53dp"
+        android:layout_marginTop="37dp"
         android:text="@string/NewImage"
-        app:layout_constraintLeft_toLeftOf="@+id/mCameraButton"
         app:layout_constraintTop_toBottomOf="@+id/mCameraButton"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1"/>
+        tools:layout_constraintTop_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <Button
+        android:id="@+id/mSetProfileButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setProfileString"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="62dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="61dp"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="38dp"
+        app:layout_constraintLeft_toRightOf="@+id/newImage"/>
 
 </android.support.constraint.ConstraintLayout>
