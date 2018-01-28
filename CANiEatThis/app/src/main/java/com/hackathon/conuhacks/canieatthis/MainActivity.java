@@ -38,6 +38,17 @@ import com.ibm.watson.developer_cloud.visual_recognition.v3.model.*;
 import static android.R.attr.duration;
 import static android.R.attr.name;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
+import com.fatsecret.platform.model.CompactFood;
+import com.fatsecret.platform.model.CompactRecipe;
+import com.fatsecret.platform.model.Food;
+import com.fatsecret.platform.model.Recipe;
+import com.fatsecret.platform.services.Response;
+import com.fatsecret.platform.services.android.Request;
+import com.fatsecret.platform.services.android.ResponseListener;
+
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_TAKE_PHOTO = 1;
@@ -51,12 +62,26 @@ public class MainActivity extends AppCompatActivity {
     TextView mTextView;
     Button mSetProfile;
 
+    VisualRecognition service;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        service = new VisualRecognition(VisualRecognition.VERSION_DATE_2016_05_20);
+
+        service.setEndPoint("https://gateway-a.watsonplatform.net/visual-recognition/api");
+        service.setApiKey("072ba1a08e2c4d39ec1d9fcdfe8b2a8f50ddcb54");
+
+        String key = "78a7438276284f46b1f4cb2aa6b85dde";
+        String secret = "96dfe6b71ce543ef9a3af14a8db94d84";
+        String query = "pasta";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Listener listener = new Listener();
+
+        Request req = new Request(key, secret, listener);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -69,6 +94,26 @@ public class MainActivity extends AppCompatActivity {
         SetProfile();
         OpenCamera();
         SetNewImage();
+
+        //This response contains the list of food items at zeroth page for your query
+        req.getFoods(requestQueue, query,0);
+
+        //This response contains the list of food items at page number 3 for your query
+        //If total results are less, then this response will have empty list of the food items
+        req.getFoods(requestQueue, query, 3);
+
+        //This food object contains detailed information about the food item
+        req.getFood(requestQueue, 29304L);
+
+        //This response contains the list of recipe items at zeroth page for your query
+        req.getRecipes(requestQueue, query,0);
+
+        //This response contains the list of recipe items at page number 2 for your query
+        //If total results are less, then this response will have empty list of the recipe items
+        req.getRecipes(requestQueue, query, 2);
+
+        //This recipe object contains detailed information about the recipe item
+        req.getRecipe(requestQueue, 315L);
     }
 
     public void SetProfile(){
@@ -82,10 +127,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 File imgFile = new  File(mCurrentPhotoPath);
-
+                if(imgFile.exists()){
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    mImageView.setImageBitmap(myBitmap);
+                }
 
                 try{
-                classifyImage(mCurrentPhotoPath);
+                classifyImage(mCurrentPhotoPath,service);
                 }
                 catch(Exception e){
                     e.printStackTrace();
@@ -145,18 +193,11 @@ public class MainActivity extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
-    private String classifyImage(String path)throws IOException, JSONException{
-
-
-            VisualRecognition service = new VisualRecognition(VisualRecognition.VERSION_DATE_2016_05_20);
-
-            service.setEndPoint("https://gateway-a.watsonplatform.net/visual-recognition/api");
-            service.setApiKey("072ba1a08e2c4d39ec1d9fcdfe8b2a8f50ddcb54");
+    private String classifyImage(String path, VisualRecognition service)throws IOException, JSONException{
 
             //(hard-coded filed name) my_images.jpg
 
             InputStream imagesStream = new FileInputStream(path);
-
 
             ClassifyOptions classifyOptions = new ClassifyOptions.Builder().imagesFile
                     (imagesStream).imagesFilename(path).parameters("{\"classifier_ids\": [\"food\"]}")
@@ -181,5 +222,51 @@ public class MainActivity extends AppCompatActivity {
 
             return name;
 
+    }
+
+    class Listener implements ResponseListener {
+        @Override
+        public void onFoodListRespone(Response<CompactFood> response) {
+            System.out.println("TOTAL FOOD ITEMS: " + response.getTotalResults());
+
+            List<CompactFood> foods = response.getResults();
+            //This list contains summary information about the food items
+
+            System.out.println("=========FOODS============");
+            for (CompactFood food: foods) {
+                System.out.println(food.getName());
+                doToast(food.getName());
+
+            }
+        }
+
+        @Override
+        public void onRecipeListRespone(Response<CompactRecipe> response) {
+            System.out.println("TOTAL RECIPES: " + response.getTotalResults());
+
+            List<CompactRecipe> recipes = response.getResults();
+            System.out.println("=========RECIPES==========");
+            for (CompactRecipe recipe: recipes) {
+                System.out.println(recipe.getName());
+                doToast(recipe.getName());
+            }
+        }
+
+        @Override
+        public void onFoodResponse(Food food) {
+            System.out.println("FOOD NAME: " + food.getName());
+            doToast(food.getName());
+
+        }
+
+        @Override
+        public void onRecipeResponse(Recipe recipe) {
+            System.out.println("RECIPE NAME: " + recipe.getName());
+            doToast(recipe.getName());
+        }
+    }
+    public void doToast(String message){
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
