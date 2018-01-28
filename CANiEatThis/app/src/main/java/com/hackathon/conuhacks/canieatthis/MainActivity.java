@@ -37,6 +37,7 @@ import com.ibm.watson.developer_cloud.visual_recognition.v3.*;
 import com.ibm.watson.developer_cloud.visual_recognition.v3.model.*;
 import static android.R.attr.duration;
 import static android.R.attr.name;
+import static android.R.id.list;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         //This recipe object contains detailed information about the recipe item
         req.getRecipe(requestQueue, 315L);
         */
+
     }
 
     public void SetProfile(){
@@ -210,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
-    private String classifyImage(String path, VisualRecognition service)throws IOException, JSONException{
+    private String[][] classifyImage(String path, VisualRecognition service)throws IOException, JSONException{
 
             //(hard-coded filed name) my_images.jpg
 
@@ -232,13 +234,68 @@ public class MainActivity extends AppCompatActivity {
 
             JSONObject res = obj.getJSONArray("images").getJSONObject(0).getJSONArray("classifiers").getJSONObject(0).getJSONArray("classes").getJSONObject(0);
             String name = res.getString("class");
-            mTextView.setText(name);
+//            mTextView.setText(name);
 
-            Toast toast = Toast.makeText(this, name, Toast.LENGTH_SHORT);
-            toast.show();
+        int totalItems=0;
+        for(int i=0; i<size; i++){
 
-            return name;
+            JSONObject item = arr.getJSONObject(i);
 
+            if(item.getDouble("score")>0.6){
+                System.out.println(item.getString("class") + ", Score: " +
+                        item.getDouble("score"));
+                totalItems++;
+            }
+
+            System.out.println();
+
+        }
+
+        System.out.println();
+
+        String[][] list = new String[totalItems][2];
+
+        //For each item in the results, check if the user should
+        //avoid it
+
+        //list[i][0] is the i'th class name.
+        //list[i][1] is the i'th class score.
+
+        for(int i=0; i<totalItems; i++){
+            list[i][0] = arr.getJSONObject(i).getString("class");
+            list[i][1] = ""+arr.getJSONObject(i).getDouble("score");
+
+            //second argument is a String array of things to avoid
+        }
+
+        //Sorting (naive sort)
+
+        double currScore= Double.parseDouble(list[0][1]);
+        for(int k=1; k<totalItems; k++){
+            for(int i=1; i<totalItems; i++){
+                Double nextScore = Double.parseDouble(list[i][1]);
+                if(nextScore > currScore){
+                    String temp0 = list[i][0];
+                    String temp1 = list[i][1];
+
+                    list[i][0] = list[i-1][0];
+                    list[i][1] = list[i-1][1];
+                    list[i-1][0] = temp0;
+                    list[i-1][1] = temp1;
+                }
+            }
+        }
+
+        String toDisplay = "";
+        for(int i=0;i<list.length;i++){
+            for(int j=0;j<list[0].length; j++){
+                toDisplay += list[i][j] + "\n";
+            }
+        }
+        mTextView.setText(toDisplay);
+
+        String best = list[0][0];
+            return list;
     }
 
     class Listener implements ResponseListener {
