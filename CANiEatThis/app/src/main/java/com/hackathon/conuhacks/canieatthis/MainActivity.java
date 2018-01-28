@@ -57,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent myIntent = getIntent(); // gets the previously created intent
+        String ProteinValue = myIntent.getStringExtra("ProteinValue"); // will return "FirstKeyValue"
+        String FatValue= myIntent.getStringExtra("FatValue"); // will return "SecondKeyValue"
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -75,9 +79,14 @@ public class MainActivity extends AppCompatActivity {
         mSetProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+            openProfile();
             }
         });}
+    public void openProfile(){
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+        finish();
+    }
     public void SetNewImage(){
         mNewImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
